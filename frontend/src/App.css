@@ -1,10 +1,55 @@
+/* Mobile-First App Styles */
 .App {
   text-align: center;
+  min-height: 100vh;
+  position: relative;
 }
 
+/* Responsive Typography */
+.App {
+  font-size: 16px;
+}
+
+@media (max-width: 480px) {
+  .App {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 768px) {
+  .App {
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .App {
+    font-size: 18px;
+  }
+}
+
+/* Ensure app takes full height on mobile */
+.App {
+  min-height: 100vh;
+  min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+}
+
+/* App Logo (if used) */
 .App-logo {
-  height: 40vmin;
+  height: 20vmin;
   pointer-events: none;
+}
+
+@media (min-width: 768px) {
+  .App-logo {
+    height: 30vmin;
+  }
+}
+
+@media (min-width: 1024px) {
+  .App-logo {
+    height: 40vmin;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -13,19 +58,56 @@
   }
 }
 
+/* App Header (if used) */
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(12px + 2vmin);
   color: white;
+  padding: 1rem;
+}
+
+@media (max-width: 480px) {
+  .App-header {
+    font-size: calc(10px + 2vmin);
+    padding: 0.5rem;
+  }
 }
 
 .App-link {
   color: #61dafb;
+}
+
+/* Ensure clickable elements are touch-friendly */
+.App button,
+.App a,
+.App input,
+.App select {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+@media (max-width: 768px) {
+  .App button,
+  .App a {
+    padding: 0.8rem 1rem;
+  }
+}
+
+/* Smooth scrolling */
+.App {
+  scroll-behavior: smooth;
+}
+
+/* Prevent horizontal scroll */
+.App {
+  overflow-x: hidden;
+  width: 100%;
 }
 
 @keyframes App-logo-spin {

@@ -1,96 +1,188 @@
-# Heart Disease Prediction App
+# Heart Disease Prediction System 🫀
 
-This project is divided into two separate parts: frontend and backend.
+A comprehensive web application for heart disease prediction powered by machine learning and AI assistance.
 
-## 📁 Project Structure
+## Features ✨
+
+- **AI-Powered Prediction**: Upload medical reports (JPEG/PDF) for heart disease risk assessment
+- **CardioCare AI Assistant**: Interactive AI chatbot for health consultations and guidance
+- **User Authentication**: Secure login and registration system
+- **Responsive Design**: Modern, mobile-friendly interface
+- **Real-time Analysis**: Instant prediction results with detailed explanations
+
+## Tech Stack 🛠️
+
+### Frontend
+- **React.js 19.1.1** - Modern UI framework
+- **React Router DOM** - Client-side routing
+- **CSS3** - Responsive styling
+
+### Backend
+- **Node.js** - Server runtime
+- **Express.js** - Web framework
+- **MongoDB Atlas** - Cloud database
+- **JWT** - Authentication
+- **Mongoose** - MongoDB object modeling
+
+## Project Structure 📁
 
 ```
 heart/
 ├── frontend/          # React.js frontend application
 │   ├── src/
-│   │   ├── pages/
-│   │   ├── starter-styles.css  # Original design styles
-│   │   └── ...
-│   ├── public/
-│   │   ├── templates/          # HTML design templates
-│   │   └── ...
-│   ├── package.json
-│   └── node_modules/
-└── backend/           # Node.js/Express backend API
-    ├── config/
-    ├── middleware/
-    ├── models/
-    ├── routes/
-    ├── server.js
-    ├── .env
-    ├── package.json
-    └── node_modules/
+│   │   ├── components/    # Reusable components
+│   │   ├── pages/         # Page components (Prediction, AI Chat, etc.)
+│   │   └── AuthContext.js # Authentication context
+│   ├── public/           # Static assets
+│   └── package.json      # Frontend dependencies
+├── backend/           # Node.js backend API
+│   ├── models/           # Database models (User, ChatHistory, etc.)
+│   ├── routes/           # API routes (auth, chat, analysis)
+│   ├── middleware/       # Custom middleware
+│   ├── config/           # Configuration files
+│   └── server.js         # Main server file
+└── README.md         # Project documentation
 ```
 
-## 🚀 Getting Started
+## Getting Started 🚀
 
-### Backend Setup
+### Prerequisites
+- Node.js (v16 or higher)
+- MongoDB Atlas account
+- Git
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/PranavKarne/heart.git
+   cd heart
+   ```
+
+2. **Install Backend Dependencies**
+   ```bash
+   cd backend
+   npm install
+   ```
+
+3. **Install Frontend Dependencies**
+   ```bash
+   cd ../frontend
+   npm install
+   ```
+
+4. **Environment Setup**
+   
+   Create `.env` files in both frontend and backend directories:
+   
+   **Backend `.env`:**
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret_key
+   PORT=5000
+   ```
+   
+   **Frontend `.env`:**
+   ```env
+   REACT_APP_API_URL=http://localhost:5000
+   ```
+
+5. **Run the Application**
+   
+   **Start Backend Server:**
+   ```bash
+   cd backend
+   npm start
+   ```
+   
+   **Start Frontend (in a new terminal):**
+   ```bash
+   cd frontend
+   npm start
+   ```
+
+6. **Access the Application**
+   - Frontend: `http://localhost:3000`
+   - Backend API: `http://localhost:5000`
+
+## Usage 💡
+
+1. **Register/Login**: Create an account or sign in
+2. **Upload Medical Reports**: Go to Prediction page and upload JPEG/PDF files
+3. **Get Predictions**: Receive AI-powered heart disease risk assessment
+4. **Chat with CardioCare AI**: Get health guidance and ask questions
+5. **View History**: Track your previous analyses and consultations
+
+## Features in Detail 🔍
+
+### Prediction System
+- Accepts JPEG and PDF medical reports
+- File size limit: 10MB
+- Drag-and-drop interface
+- Real-time validation
+
+### CardioCare AI Assistant
+- 24/7 health consultation
+- Personalized responses
+- Chat history storage
+- Medical disclaimer included
+
+### Security
+- JWT-based authentication
+- Secure file upload
+- Input validation
+- Protected routes
+
+## API Endpoints 🔗
+
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/analysis/predict` - Heart disease prediction
+- `GET /api/chat/history` - Chat history
+- `POST /api/chat/message` - Send chat message
+
+## Development 👨‍💻
+
+### Available Scripts
+
+**Backend:**
 ```bash
-cd backend
-npm install
-npm start
+npm start       # Start server with nodemon
+npm run dev     # Development mode with auto-restart
 ```
-The backend server will run on http://localhost:5000
 
-### Frontend Setup
+**Frontend:**
 ```bash
-cd frontend
-npm install
-npm start
+npm start       # Start development server
+npm run build   # Build for production
+npm test        # Run tests
 ```
-The frontend will run on http://localhost:3000
 
-### `npm run build`
+## Contributing 🤝
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## License 📄
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-### `npm run eject`
+## Contact 📧
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+**Pranav Karne** - [GitHub](https://github.com/PranavKarne)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Project Link: [https://github.com/PranavKarne/heart](https://github.com/PranavKarne/heart)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Acknowledgments 🙏
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+- React.js community for excellent documentation
+- MongoDB Atlas for cloud database services
+- OpenAI for AI integration possibilities
+- Healthcare professionals for domain expertise
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+⭐ Star this repository if you found it helpful!

@@ -1,23 +1,49 @@
-# Getting Started with Create React App
+# Heart Disease Prediction App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is divided into two separate parts: frontend and backend.
 
-## Available Scripts
+## 📁 Project Structure
 
-In the project directory, you can run:
+```
+heart/
+├── frontend/          # React.js frontend application
+│   ├── src/
+│   │   ├── pages/
+│   │   ├── starter-styles.css  # Original design styles
+│   │   └── ...
+│   ├── public/
+│   │   ├── templates/          # HTML design templates
+│   │   └── ...
+│   ├── package.json
+│   └── node_modules/
+└── backend/           # Node.js/Express backend API
+    ├── config/
+    ├── middleware/
+    ├── models/
+    ├── routes/
+    ├── server.js
+    ├── .env
+    ├── package.json
+    └── node_modules/
+```
 
-### `npm start`
+## 🚀 Getting Started
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Backend Setup
+```bash
+cd backend
+npm install
+npm start
+```
+The backend server will run on http://localhost:5000
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Frontend Setup
+```bash
+cd frontend
+npm install
+npm start
+```
+The frontend will run on http://localhost:3000
 
 ### `npm run build`
 

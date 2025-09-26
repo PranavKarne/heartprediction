@@ -73,16 +73,30 @@ heart/
 
 4. **Environment Setup**
    
-   Create `.env` files in both frontend and backend directories:
+   Create `.env` files in both frontend and backend directories by copying the example files:
    
-   **Backend `.env`:**
+   **Backend Environment:**
+   ```bash
+   cd backend
+   cp .env.example .env
+   # Edit .env with your actual values
+   ```
+   
+   **Frontend Environment:**
+   ```bash
+   cd frontend
+   cp .env.example .env
+   # Edit .env with your actual values
+   ```
+   
+   **Required Backend Environment Variables:**
    ```env
    MONGODB_URI=your_mongodb_connection_string
    JWT_SECRET=your_jwt_secret_key
    PORT=5000
    ```
    
-   **Frontend `.env`:**
+   **Required Frontend Environment Variables:**
    ```env
    REACT_APP_API_URL=http://localhost:5000
    ```

@@ -1,0 +1,17 @@
+{
+  "name": "heart",
+  "description": "🫀 Heart Disease Prediction System - A comprehensive web application for heart disease prediction powered by machine learning and AI assistance (CardioCare AI)",
+  "homepage": "",
+  "topics": [
+    "heart-disease",
+    "prediction",
+    "machine-learning",
+    "react",
+    "nodejs",
+    "mongodb",
+    "healthcare",
+    "ai-assistant",
+    "medical-prediction",
+    "full-stack"
+  ]
+}

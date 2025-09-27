@@ -148,13 +148,13 @@ body::after {
 }
 
 .logo {
-    font-size: 2rem;
+    font-size: 2.3rem;
     font-weight: bold;
     text-decoration: none;
     position: relative;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
     transition: transform 0.3s ease;
 }
 
@@ -167,11 +167,26 @@ body::after {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    transition: all 0.3s ease;
+}
+
+.logo:hover .logo-text {
+    animation: lub-dub 0.8s ease-in-out;
 }
 
 .logo-icon {
     animation: heartbeat 1.5s ease-in-out infinite;
     font-size: 1.8rem;
+    color: #e74c3c;
+}
+
+@keyframes lub-dub {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.1); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.05); }
+    60% { transform: scale(1); }
+    100% { transform: scale(1); }
 }
 
 .nav-links {
@@ -187,17 +202,17 @@ body::after {
     font-weight: 500;
     transition: all 0.3s ease;
     position: relative;
-    padding: 0.4rem 0.8rem;
+    padding: 0.5rem 1rem;
     border-radius: 20px;
     display: flex;
     align-items: center;
-    gap: 0.3rem;
-    font-size: 0.9rem;
+    gap: 0.4rem;
+    font-size: 1.1rem;
     white-space: nowrap;
 }
 
 .nav-icon {
-    font-size: 1rem;
+    font-size: 1.2rem;
     opacity: 0.8;
     transition: opacity 0.3s ease;
 }

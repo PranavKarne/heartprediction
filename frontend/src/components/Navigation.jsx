@@ -50,7 +50,7 @@ const Navigation = ({ currentPage }) => {
       <div className="nav-container">
         <Link to="/" className="logo" onClick={handleLinkClick}>
           <span className="logo-text">CardioPredict</span>
-          <span className="logo-icon">💓</span>
+          <span className="logo-icon">🫀</span>
         </Link>
         
         <ul className={`nav-links ${isMobileMenuOpen ? 'nav-links-mobile-active' : ''}`}>

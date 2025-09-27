@@ -131,12 +131,18 @@ export const AuthProvider = ({ children }) => {
     return user !== null;
   };
 
+  const updateUserProfile = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem('cardiopredict_user', JSON.stringify(updatedUser));
+  };
+
   const value = {
     user,
     login,
     signup,
     logout,
     isAuthenticated,
+    updateUserProfile,
     isLoading
   };
 

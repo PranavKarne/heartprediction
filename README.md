@@ -15,7 +15,7 @@ An advanced web application for heart disease prediction powered by CNN-GNN mach
 - **Real-time Results** - Instant predictions with risk scores, confidence levels, and probability distributions
 
 ### User Experience
-- **Secure Authentication** - JWT-based login/registration with password reset via email
+- **Secure Authentication** - JWT-based login/registration system
 - **Responsive Design** - Modern, mobile-friendly interface with smooth animations
 - **User Profile Management** - Update personal information and view complete medical history
 - **Chat History** - Save and review all AI assistant conversations
@@ -179,8 +179,6 @@ Open your browser and navigate to: **`http://localhost:3000`**
 ### 1. Authentication
 1. **Sign Up** - Create an account with email, password, name, phone, and date of birth
 2. **Login** - Access your account with email and password
-3. **Forgot Password** - Request password reset link via email
-4. **Reset Password** - Set new password using the reset token
 
 ### 2. ECG Analysis
 1. Navigate to the **"Prediction"** page
@@ -220,8 +218,6 @@ Open your browser and navigate to: **`http://localhost:3000`**
 | POST | `/api/auth/login` | User login | No |
 | GET | `/api/auth/me` | Get current user | Yes |
 | PUT | `/api/auth/profile` | Update user profile | Yes |
-| POST | `/api/auth/forgot-password` | Request password reset | No |
-| POST | `/api/auth/reset-password` | Reset password with token | No |
 
 ### Analysis
 | Method | Endpoint | Description | Protected |

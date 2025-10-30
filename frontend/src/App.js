@@ -6,8 +6,6 @@ import Login from "./pages/Login";
 import Ai from "./pages/Ai";
 import Profile from "./pages/Profile";
 import History from "./pages/History";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./AuthContext.js";
 
@@ -23,8 +21,6 @@ function App() {
           <Route path='ai' element={<Ai />} />
           <Route path='profile' element={<Profile />} />
           <Route path='history' element={<History />} />
-          <Route path='forgot-password' element={<ForgotPassword />} />
-          <Route path='reset-password' element={<ResetPassword />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

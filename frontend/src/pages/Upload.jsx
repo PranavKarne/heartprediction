@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import AuthModal from "../AuthModal";
 import Navigation from "../components/Navigation";
@@ -8,6 +7,7 @@ import "./Styles.css";
 function Upload() {
   const { user, isAuthenticated } = useAuth();
   const [uploadedFile, setUploadedFile] = useState(null);
+  const [uploadedImageURL, setUploadedImageURL] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [results, setResults] = useState(null);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -15,10 +15,10 @@ function Upload() {
   const fileInputRef = useRef(null);
 
   const validateFile = (file) => {
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'application/pdf'];
+    const allowedTypes = ['image/png'];
     const maxSize = 10 * 1024 * 1024; // 10MB
     if (!allowedTypes.includes(file.type)) {
-      return 'Please upload only JPEG or PDF files.';
+      return 'Please upload a PNG file.';
     }
     if (file.size > maxSize) {
       return 'File size must be less than 10MB.';
@@ -33,15 +33,21 @@ function Upload() {
       if (error) {
         setFileError(error);
         setUploadedFile(null);
+        setUploadedImageURL(null);
       } else {
         setFileError('');
         setUploadedFile(file);
+        // Create URL for preview
+        const imageURL = URL.createObjectURL(file);
+        setUploadedImageURL(imageURL);
       }
     }
   };
 
   const removeFile = () => {
     setUploadedFile(null);
+    setUploadedImageURL(null);
+    setResults(null); // Clear analysis results
     setFileError('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -60,20 +66,49 @@ function Upload() {
     processFile();
   };
 
-  const processFile = () => {
+  const processFile = async () => {
     setIsProcessing(true);
-    setTimeout(() => {
-      setIsProcessing(false);
-      const riskLevel = ['Low', 'Moderate', 'High'][Math.floor(Math.random() * 3)];
+    setFileError('');
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', uploadedFile);
+      
+      const token = localStorage.getItem('cardiopredict_token');
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      
+      const response = await fetch(`${API_URL}/api/analysis/predict`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Analysis failed');
+      }
+      
+      // Set results from API response
       setResults({
-        riskScore: Math.floor(Math.random() * 100),
-        riskLevel: riskLevel,
-        confidence: 95.8,
+        riskScore: data.data.riskScore,
+        riskLevel: data.data.riskLevel,
+        confidence: data.data.confidence,
+        predictedClass: data.data.predictedClass,
+        probabilities: data.data.probabilities,
         fileName: uploadedFile.name,
         userId: user?.id,
-        analysisDate: new Date().toLocaleDateString()
+        analysisDate: new Date(data.data.analysisDate).toLocaleDateString()
       });
-    }, 3000);
+      
+    } catch (error) {
+      console.error('Analysis error:', error);
+      setFileError(error.message || 'Failed to analyze the file. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -90,7 +125,7 @@ function Upload() {
               textAlign: 'center',
               fontSize: '1.4rem'
             }}>
-              📄 Upload Medical File (JPEG or PDF only) *
+              📄 Upload Medical File (PNG only) *
             </h3>
             
             <div 
@@ -110,13 +145,13 @@ function Upload() {
                 Click to upload your medical file
               </h3>
               <p style={{ color: '#888', fontSize: '0.9rem' }}>
-                Supported: JPEG, JPG, PDF | Max size: 10MB
+                Supported: PNG | Max size: 10MB
               </p>
               <input
                 type="file"
                 ref={fileInputRef}
                 style={{ display: 'none' }}
-                accept=".jpg,.jpeg,.pdf"
+                accept=".png,image/png"
                 onChange={handleFileSelect}
               />
             </div>
@@ -165,15 +200,31 @@ function Upload() {
                   <button 
                     onClick={removeFile}
                     style={{
-                      background: 'rgba(255, 107, 107, 0.1)',
-                      border: '1px solid rgba(255, 107, 107, 0.3)',
-                      color: '#e74c3c',
-                      padding: '0.5rem 1rem',
-                      borderRadius: '8px',
-                      cursor: 'pointer'
+                      background: 'linear-gradient(135deg, #ff6b6b, #ee5a6f)',
+                      border: 'none',
+                      color: 'white',
+                      padding: '0.75rem 1.5rem',
+                      borderRadius: '25px',
+                      cursor: 'pointer',
+                      fontWeight: '600',
+                      fontSize: '0.95rem',
+                      boxShadow: '0 4px 15px rgba(255, 107, 107, 0.3)',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(255, 107, 107, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 15px rgba(255, 107, 107, 0.3)';
                     }}
                   >
-                    ��️ Remove
+                    <span style={{ fontSize: '1.1rem' }}>🗑️</span>
+                    <span>Remove</span>
                   </button>
                 </div>
               </div>
@@ -224,12 +275,51 @@ function Upload() {
                 border: '2px solid #2ecc71',
                 textAlign: 'center'
               }}>
+                {/* Display uploaded ECG image */}
+                {uploadedImageURL && (
+                  <div style={{
+                    marginBottom: '2rem',
+                    padding: '1rem',
+                    background: 'white',
+                    borderRadius: '15px',
+                    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)'
+                  }}>
+                    <h4 style={{ color: '#667eea', marginBottom: '1rem' }}>
+                      📸 Uploaded ECG Image
+                    </h4>
+                    <img 
+                      src={uploadedImageURL} 
+                      alt="Uploaded ECG"
+                      style={{
+                        maxWidth: '100%',
+                        height: 'auto',
+                        borderRadius: '10px',
+                        border: '2px solid rgba(102, 126, 234, 0.2)',
+                        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)'
+                      }}
+                    />
+                  </div>
+                )}
+                
                 <h3 style={{ color: '#27ae60', fontSize: '2rem', marginBottom: '2rem' }}>
                   🫀 Analysis Results
                 </h3>
                 <p style={{ color: '#666', marginBottom: '2rem' }}>
                   File: {results.fileName} | Date: {results.analysisDate}
                 </p>
+                {results.predictedClass && (
+                  <div style={{
+                    padding: '1rem',
+                    background: 'rgba(102, 126, 234, 0.1)',
+                    borderRadius: '10px',
+                    marginBottom: '2rem'
+                  }}>
+                    <h4 style={{ color: '#667eea', marginBottom: '0.5rem' }}>Predicted Condition</h4>
+                    <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#667eea', margin: 0 }}>
+                      {results.predictedClass}
+                    </p>
+                  </div>
+                )}
                 <div style={{ 
                   display: 'grid', 
                   gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
@@ -255,9 +345,35 @@ function Upload() {
                     </p>
                   </div>
                 </div>
-                <Link to="/ai" className="btn" style={{ textDecoration: 'none' }}>
-                  💬 Discuss Results with AI
-                </Link>
+                
+                {results.probabilities && (
+                  <div style={{
+                    marginTop: '2rem',
+                    padding: '1.5rem',
+                    background: 'white',
+                    borderRadius: '15px',
+                    textAlign: 'left'
+                  }}>
+                    <h4 style={{ color: '#667eea', marginBottom: '1rem', textAlign: 'center' }}>
+                      All Condition Probabilities
+                    </h4>
+                    {Object.entries(results.probabilities)
+                      .sort((a, b) => b[1] - a[1])
+                      .map(([condition, probability]) => (
+                        <div key={condition} style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          padding: '0.75rem',
+                          marginBottom: '0.5rem',
+                          background: 'rgba(102, 126, 234, 0.05)',
+                          borderRadius: '8px'
+                        }}>
+                          <span style={{ fontWeight: 'bold', color: '#333' }}>{condition}</span>
+                          <span style={{ color: '#667eea', fontWeight: 'bold' }}>{probability}%</span>
+                        </div>
+                      ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

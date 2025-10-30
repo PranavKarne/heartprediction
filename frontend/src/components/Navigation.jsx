@@ -9,11 +9,11 @@ const Navigation = ({ currentPage }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isNavVisible, setIsNavVisible] = useState(true);
 
-  // Apply auto-hide to all pages
-  const shouldAutoHide = true;
+  // Disable auto-hide - navbar is always fixed and visible
+  const shouldAutoHide = false;
 
   // Handle scroll effect for navbar
-  useEffect(() => {
+  useEffect(() => { 
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };

@@ -11,8 +11,7 @@ const analysisHistorySchema = new mongoose.Schema({
   },
   patientDataId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'PatientData',
-    required: true
+    ref: 'User'
   },
   analysisType: {
     type: String,
@@ -22,6 +21,8 @@ const analysisHistorySchema = new mongoose.Schema({
   inputData: {
     patientInfo: Object,
     fileCount: Number,
+    fileName: String,
+    fileSize: Number,
     processingTime: Number // in milliseconds
   },
   results: {
@@ -42,6 +43,8 @@ const analysisHistorySchema = new mongoose.Schema({
       min: 0,
       max: 100
     },
+    predictedClass: String,
+    probabilities: Object,
     keyFactors: [{
       factor: String,
       impact: {

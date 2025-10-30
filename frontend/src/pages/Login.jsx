@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import Navigation from "../components/Navigation";
 import "./Styles.css";
@@ -323,8 +323,8 @@ function Login() {
 
             {!isSignUp && (
               <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-                <button 
-                  type="button"
+                <Link 
+                  to="/forgot-password"
                   style={{ 
                     background: 'none',
                     border: 'none',
@@ -335,12 +335,9 @@ function Login() {
                     fontSize: 'inherit',
                     fontFamily: 'inherit'
                   }}
-                  onClick={() => {
-                    alert('Password reset functionality would be implemented here');
-                  }}
                 >
                    Forgot your password?
-                </button>
+                </Link>
               </div>
             )}
 

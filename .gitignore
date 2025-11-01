@@ -24,6 +24,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
 # BFG Repo-Cleaner reports
 .bfg-report/
 
@@ -46,3 +53,6 @@ backend/models/finalmodelcollab.ipynb
 backend/check-history.js
 **/check-*.js
 **/*-test-*.js
+
+# Internal documentation
+frontend/HISTORY_IMPROVEMENTS.md

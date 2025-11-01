@@ -66,10 +66,10 @@ const History = () => {
 
   const getRiskLevelColor = (riskLevel) => {
     switch(riskLevel) {
-      case 'Low': return '#2ecc71';
-      case 'Moderate': return '#f39c12';
-      case 'High': return '#e74c3c';
-      default: return '#95a5a6';
+      case 'Low': return { primary: '#10b981', light: '#d1fae5', dark: '#059669' };
+      case 'Moderate': return { primary: '#f59e0b', light: '#fef3c7', dark: '#d97706' };
+      case 'High': return { primary: '#ef4444', light: '#fee2e2', dark: '#dc2626' };
+      default: return { primary: '#6b7280', light: '#f3f4f6', dark: '#4b5563' };
     }
   };
 
@@ -88,44 +88,48 @@ const History = () => {
 
         <div className="history-section">
           {historyLoading ? (
-            <div style={{ textAlign: 'center', padding: '3rem' }}>
+            <div style={{ textAlign: 'center', padding: '4rem' }}>
               <div className="loading-spinner" style={{ 
-                width: '50px', 
-                height: '50px',
+                width: '60px', 
+                height: '60px',
                 margin: '0 auto',
-                border: '4px solid rgba(102, 126, 234, 0.1)',
-                borderTop: '4px solid #667eea',
+                border: '5px solid #e5e7eb',
+                borderTop: '5px solid #6366f1',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite'
               }}></div>
-              <p style={{ marginTop: '1rem', color: '#667eea' }}>Loading analysis history...</p>
+              <p style={{ marginTop: '1.5rem', color: '#6b7280', fontSize: '1rem' }}>Loading analysis history...</p>
             </div>
           ) : analysisHistory.length === 0 ? (
             <div style={{
               textAlign: 'center',
-              padding: '4rem',
-              background: 'rgba(102, 126, 234, 0.05)',
-              borderRadius: '20px',
-              border: '2px dashed rgba(102, 126, 234, 0.3)'
+              padding: '4rem 2rem',
+              background: 'white',
+              borderRadius: '16px',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
             }}>
               <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📋</div>
-              <h3 style={{ color: '#667eea', marginBottom: '0.5rem' }}>No Analysis History Yet</h3>
-              <p style={{ color: '#666', marginBottom: '2rem' }}>
+              <h3 style={{ color: '#111827', marginBottom: '0.5rem', fontSize: '1.25rem', fontWeight: '600' }}>No Analysis History Yet</h3>
+              <p style={{ color: '#6b7280', marginBottom: '2rem', fontSize: '0.95rem' }}>
                 Your heart health analysis history will appear here once you upload and analyze ECG files.
               </p>
               <button
                 onClick={() => navigate('/upload')}
                 style={{
-                  padding: '1rem 2rem',
-                  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                  padding: '0.875rem 1.75rem',
+                  background: '#6366f1',
                   color: 'white',
                   border: 'none',
-                  borderRadius: '50px',
-                  fontSize: '1rem',
+                  borderRadius: '8px',
+                  fontSize: '0.95rem',
                   fontWeight: '600',
                   cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)'
+                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+                  transition: 'all 0.2s'
                 }}
+                onMouseEnter={(e) => e.currentTarget.style.background = '#4f46e5'}
+                onMouseLeave={(e) => e.currentTarget.style.background = '#6366f1'}
               >
                 🩺 Upload Your First ECG
               </button>
@@ -133,27 +137,37 @@ const History = () => {
           ) : (
             <div>
               <div style={{
-                marginBottom: '2rem',
+                marginBottom: '1.5rem',
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 flexWrap: 'wrap',
                 gap: '1rem'
               }}>
-                <h3 style={{ color: '#667eea', margin: 0 }}>
+                <h3 style={{ color: '#111827', margin: 0, fontSize: '1.125rem', fontWeight: '600' }}>
                   📊 Total Analyses: {analysisHistory.length}
                 </h3>
-                <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
                   <button
                     onClick={fetchAnalysisHistory}
                     style={{
-                      padding: '0.5rem 1rem',
-                      background: 'rgba(102, 126, 234, 0.1)',
-                      border: '1px solid #667eea',
+                      padding: '0.625rem 1.25rem',
+                      background: 'white',
+                      border: '1px solid #d1d5db',
                       borderRadius: '8px',
-                      color: '#667eea',
+                      color: '#374151',
                       cursor: 'pointer',
-                      fontSize: '0.9rem'
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#f9fafb';
+                      e.currentTarget.style.borderColor = '#9ca3af';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'white';
+                      e.currentTarget.style.borderColor = '#d1d5db';
                     }}
                   >
                     🔄 Refresh
@@ -161,22 +175,25 @@ const History = () => {
                   <button
                     onClick={() => navigate('/upload')}
                     style={{
-                      padding: '0.5rem 1rem',
-                      background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                      padding: '0.625rem 1.25rem',
+                      background: '#6366f1',
                       border: 'none',
                       borderRadius: '8px',
                       color: 'white',
                       cursor: 'pointer',
-                      fontSize: '0.9rem',
-                      fontWeight: '600'
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      transition: 'all 0.2s'
                     }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = '#4f46e5'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = '#6366f1'}
                   >
                     ➕ New Analysis
                   </button>
                 </div>
               </div>
 
-              <div style={{ display: 'grid', gap: '1.5rem' }}>
+              <div style={{ display: 'grid', gap: '1.25rem' }}>
                 {analysisHistory.map((analysis, index) => {
                   const { date, time } = formatDateTime(analysis.createdAt);
                   const riskColor = getRiskLevelColor(analysis.results.riskLevel);
@@ -186,19 +203,19 @@ const History = () => {
                       key={analysis._id}
                       style={{
                         background: 'white',
-                        borderRadius: '15px',
+                        borderRadius: '12px',
                         padding: '1.5rem',
-                        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-                        border: '2px solid rgba(102, 126, 234, 0.1)',
-                        transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                        border: `2px solid ${riskColor.light}`,
+                        transition: 'all 0.2s ease'
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.2)';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+                        e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
                       }}
                     >
                       {/* Header with date and index */}
@@ -206,40 +223,41 @@ const History = () => {
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'flex-start',
-                        marginBottom: '1rem',
-                        paddingBottom: '1rem',
-                        borderBottom: '1px solid rgba(102, 126, 234, 0.1)'
+                        marginBottom: '1.25rem',
+                        paddingBottom: '1.25rem',
+                        borderBottom: '1px solid #e5e7eb'
                       }}>
                         <div>
                           <div style={{
                             display: 'inline-block',
-                            background: 'rgba(102, 126, 234, 0.1)',
-                            color: '#667eea',
-                            padding: '0.25rem 0.75rem',
-                            borderRadius: '20px',
-                            fontSize: '0.85rem',
-                            fontWeight: 'bold',
-                            marginBottom: '0.5rem'
+                            background: '#eef2ff',
+                            color: '#6366f1',
+                            padding: '0.375rem 0.875rem',
+                            borderRadius: '6px',
+                            fontSize: '0.813rem',
+                            fontWeight: '600',
+                            marginBottom: '0.75rem'
                           }}>
                             Analysis #{analysisHistory.length - index}
                           </div>
-                          <div style={{ color: '#666', fontSize: '0.9rem' }}>
+                          <div style={{ color: '#6b7280', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
                             📅 {date}  •  🕐 {time}
                           </div>
                           {analysis.inputData?.fileName && (
-                            <div style={{ color: '#888', fontSize: '0.85rem', marginTop: '0.25rem' }}>
+                            <div style={{ color: '#9ca3af', fontSize: '0.813rem' }}>
                               📄 {analysis.inputData.fileName}
                             </div>
                           )}
                         </div>
                         <div style={{
-                          background: `${riskColor}15`,
-                          color: riskColor,
-                          padding: '0.5rem 1rem',
-                          borderRadius: '10px',
-                          fontWeight: 'bold',
-                          fontSize: '0.9rem',
-                          border: `2px solid ${riskColor}30`
+                          background: riskColor.light,
+                          color: riskColor.dark,
+                          padding: '0.75rem 1.25rem',
+                          borderRadius: '8px',
+                          fontWeight: '700',
+                          fontSize: '0.875rem',
+                          border: `2px solid ${riskColor.primary}40`,
+                          textAlign: 'center'
                         }}>
                           {analysis.results.riskLevel} Risk
                         </div>
@@ -248,47 +266,50 @@ const History = () => {
                       {/* Results Grid */}
                       <div style={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
                         gap: '1rem',
-                        marginBottom: '1rem'
+                        marginBottom: '1.25rem'
                       }}>
                         <div style={{
-                          background: 'rgba(102, 126, 234, 0.05)',
+                          background: '#f9fafb',
                           padding: '1rem',
-                          borderRadius: '10px',
-                          textAlign: 'center'
+                          borderRadius: '8px',
+                          textAlign: 'center',
+                          border: '1px solid #e5e7eb'
                         }}>
-                          <div style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>
+                          <div style={{ fontSize: '0.813rem', color: '#6b7280', marginBottom: '0.375rem', fontWeight: '500' }}>
                             Risk Score
                           </div>
-                          <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#667eea' }}>
+                          <div style={{ fontSize: '1.875rem', fontWeight: '700', color: riskColor.primary }}>
                             {analysis.results.riskScore}%
                           </div>
                         </div>
                         <div style={{
-                          background: 'rgba(102, 126, 234, 0.05)',
+                          background: '#f9fafb',
                           padding: '1rem',
-                          borderRadius: '10px',
-                          textAlign: 'center'
+                          borderRadius: '8px',
+                          textAlign: 'center',
+                          border: '1px solid #e5e7eb'
                         }}>
-                          <div style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>
+                          <div style={{ fontSize: '0.813rem', color: '#6b7280', marginBottom: '0.375rem', fontWeight: '500' }}>
                             Confidence
                           </div>
-                          <div style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#667eea' }}>
+                          <div style={{ fontSize: '1.875rem', fontWeight: '700', color: '#6366f1' }}>
                             {analysis.results.confidence}%
                           </div>
                         </div>
                         {analysis.results.predictedClass && (
                           <div style={{
-                            background: 'rgba(102, 126, 234, 0.05)',
+                            background: '#f9fafb',
                             padding: '1rem',
-                            borderRadius: '10px',
-                            textAlign: 'center'
+                            borderRadius: '8px',
+                            textAlign: 'center',
+                            border: '1px solid #e5e7eb'
                           }}>
-                            <div style={{ fontSize: '0.85rem', color: '#666', marginBottom: '0.25rem' }}>
+                            <div style={{ fontSize: '0.813rem', color: '#6b7280', marginBottom: '0.375rem', fontWeight: '500' }}>
                               Condition
                             </div>
-                            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#667eea' }}>
+                            <div style={{ fontSize: '1.25rem', fontWeight: '700', color: '#111827' }}>
                               {analysis.results.predictedClass}
                             </div>
                           </div>
@@ -298,15 +319,16 @@ const History = () => {
                       {/* Probabilities */}
                       {analysis.results.probabilities && (
                         <div style={{
-                          background: 'rgba(245, 247, 250, 0.8)',
-                          padding: '1rem',
-                          borderRadius: '10px',
-                          marginTop: '1rem'
+                          background: '#f9fafb',
+                          padding: '1.25rem',
+                          borderRadius: '8px',
+                          marginTop: '1.25rem',
+                          border: '1px solid #e5e7eb'
                         }}>
-                          <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#667eea', marginBottom: '0.75rem' }}>
+                          <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#111827', marginBottom: '1rem' }}>
                             Condition Probabilities:
                           </div>
-                          <div style={{ display: 'grid', gap: '0.5rem' }}>
+                          <div style={{ display: 'grid', gap: '0.75rem' }}>
                             {Object.entries(analysis.results.probabilities)
                               .sort((a, b) => b[1] - a[1])
                               .map(([condition, probability]) => (
@@ -314,29 +336,31 @@ const History = () => {
                                   display: 'flex',
                                   justifyContent: 'space-between',
                                   alignItems: 'center',
-                                  padding: '0.5rem',
+                                  padding: '0.625rem',
                                   background: 'white',
-                                  borderRadius: '6px'
+                                  borderRadius: '6px',
+                                  border: '1px solid #e5e7eb'
                                 }}>
-                                  <span style={{ fontSize: '0.85rem', fontWeight: '500', color: '#333' }}>
+                                  <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#374151' }}>
                                     {condition}
                                   </span>
-                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                                     <div style={{
                                       width: '100px',
-                                      height: '6px',
-                                      background: '#e0e0e0',
-                                      borderRadius: '3px',
+                                      height: '8px',
+                                      background: '#e5e7eb',
+                                      borderRadius: '4px',
                                       overflow: 'hidden'
                                     }}>
                                       <div style={{
                                         width: `${probability}%`,
                                         height: '100%',
-                                        background: '#667eea',
-                                        transition: 'width 0.3s ease'
+                                        background: '#6366f1',
+                                        transition: 'width 0.3s ease',
+                                        borderRadius: '4px'
                                       }}></div>
                                     </div>
-                                    <span style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#667eea', minWidth: '45px', textAlign: 'right' }}>
+                                    <span style={{ fontSize: '0.875rem', fontWeight: '700', color: '#6366f1', minWidth: '48px', textAlign: 'right' }}>
                                       {probability}%
                                     </span>
                                   </div>

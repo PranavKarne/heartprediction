@@ -2,6 +2,7 @@
 """
 ECG Heart Disease Prediction Script
 Digitizes a 6x2 grid ECG PNG and runs inference with the fine-tuned model
+Includes MobileNetV2 pre-validation to verify image is valid ECG
 """
 import sys
 import os
@@ -12,7 +13,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv, global_mean_pool
 import cv2
-from scipy.signal import resample 
+from scipy.signal import resample
+from torchvision import models, transforms
+from PIL import Image
 
 # Configuration
 TARGET_CLASSES = ['NORM', 'MI', 'STTC', 'HYP', 'CD']
@@ -27,9 +30,13 @@ CALIBRATED_THRESHOLDS = {
     'CD': 0.91
 }
 
-# Model path - update this to your model location
+# Model paths
 MODEL_PATH = os.path.join(os.path.dirname(__file__), 'models', 'finetuned_model.pt')
+VALIDATOR_MODEL_PATH = os.path.join(os.path.dirname(__file__), 'models', 'best_mobilenetv2.pt')
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+# ECG validation threshold (probability that image is valid ECG)
+ECG_VALIDATION_THRESHOLD = 0.5
 
 
 class LeadCNN(nn.Module):
@@ -49,6 +56,59 @@ class LeadCNN(nn.Module):
         x = F.relu(self.bn2(self.conv2(x)))
         x = F.relu(self.bn3(self.conv3(x)))
         return self.pool(x).squeeze(-1)
+
+
+def load_ecg_validator():
+    """Load MobileNetV2 binary classifier for ECG validation"""
+    try:
+        model = models.mobilenet_v2(weights=None)
+        model.classifier[1] = nn.Linear(model.last_channel, 1)
+        
+        state_dict = torch.load(VALIDATOR_MODEL_PATH, map_location=DEVICE)
+        model.load_state_dict(state_dict)
+        
+        model.to(DEVICE)
+        model.eval()
+        return model
+    except Exception as e:
+        # If validator model not found, return None (skip validation)
+        print(f"Warning: ECG validator not loaded: {e}", file=sys.stderr)
+        return None
+
+
+def validate_ecg_image(image_path, validator_model):
+    """
+    Validate if image is a valid ECG using MobileNetV2 binary classifier
+    Returns: (is_valid, confidence)
+    """
+    if validator_model is None:
+        # Skip validation if model not available
+        return True, 1.0
+    
+    try:
+        # Image preprocessing (same as training)
+        transform = transforms.Compose([
+            transforms.Resize((224, 224)),
+            transforms.ToTensor(),
+            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        ])
+        
+        # Load and preprocess image
+        img = Image.open(image_path).convert('RGB')
+        img_tensor = transform(img).unsqueeze(0).to(DEVICE)
+        
+        # Get prediction
+        with torch.no_grad():
+            logit = validator_model(img_tensor)
+            prob = torch.sigmoid(logit).item()
+        
+        is_valid = prob >= ECG_VALIDATION_THRESHOLD
+        return is_valid, prob
+        
+    except Exception as e:
+        print(f"Warning: ECG validation failed: {e}", file=sys.stderr)
+        # On error, allow processing to continue
+        return True, 1.0
 
 
 class ECG_CNN_GNN(nn.Module):
@@ -200,12 +260,26 @@ def load_model(model_path):
     return model
 
 
-def predict_image(image_path, model, thresholds):
+def predict_image(image_path, model, validator_model, thresholds):
     """
     Full prediction pipeline for an ECG image
+    Step 1: Validate image is valid ECG
+    Step 2: Run disease classification
     Returns dict with prediction results
     """
-    # Digitize image
+    # Step 1: Validate ECG image
+    is_valid_ecg, validation_confidence = validate_ecg_image(image_path, validator_model)
+    
+    if not is_valid_ecg:
+        return {
+            'success': False,
+            'error': 'Invalid ECG image',
+            'message': f'The uploaded image does not appear to be a valid ECG. Confidence: {validation_confidence:.2%}',
+            'validation_confidence': round(validation_confidence * 100, 2),
+            'is_valid_ecg': False
+        }
+    
+    # Step 2: Digitize image
     signal = digitize_ecg_image_6x2(image_path)
     
     # Get probabilities
@@ -244,7 +318,9 @@ def predict_image(image_path, model, thresholds):
         'risk_level': risk_level,
         'confidence': round(confidence, 2),
         'probabilities': {TARGET_CLASSES[i]: round(float(probs[i] * 100), 2) for i in range(len(TARGET_CLASSES))},
-        'threshold_details': details
+        'threshold_details': details,
+        'validation_confidence': round(validation_confidence * 100, 2),
+        'is_valid_ecg': True
     }
 
 
@@ -261,18 +337,25 @@ def main():
         if not os.path.exists(image_path):
             raise FileNotFoundError(f"Image not found: {image_path}")
         
-        # Verify model exists
+        # Verify main model exists
         if not os.path.exists(MODEL_PATH):
             raise FileNotFoundError(f"Model not found: {MODEL_PATH}. Please place finetuned_model.pt in {os.path.dirname(MODEL_PATH)}")
         
-        # Load model
+        # Load validator model (binary classifier)
+        validator_model = load_ecg_validator()
+        
+        # Load main model (CNN-GNN)
         model = load_model(MODEL_PATH)
         
-        # Run prediction
-        result = predict_image(image_path, model, CALIBRATED_THRESHOLDS)
+        # Run prediction with validation
+        result = predict_image(image_path, model, validator_model, CALIBRATED_THRESHOLDS)
         
         # Output JSON result
         print(json.dumps(result))
+        
+        # Exit with error code if validation failed
+        if not result.get('success', False):
+            sys.exit(1)
         
     except Exception as e:
         error_result = {

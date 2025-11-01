@@ -57,26 +57,19 @@ router.post('/predict', auth, upload.single('file'), async (req, res) => {
         fs.unlinkSync(tempFilePath);
       }
 
-      if (code !== 0) {
-        console.error('Python script error:', pythonError);
-        return res.status(500).json({
-          success: false,
-          message: 'Analysis failed',
-          error: pythonError || 'Unknown error occurred'
-        });
-      }
-
+      // Try to parse Python output first (even on non-zero exit code)
       try {
         const result = JSON.parse(pythonOutput);
 
         if (!result.success) {
-          return res.status(500).json({
+          // Validation failed or other expected error
+          return res.status(400).json({
             success: false,
-            message: result.error || 'Analysis failed'
+            message: result.message || result.error || 'Analysis failed'
           });
         }
 
-        // Save analysis to history
+        // Success case continues below...
         try {
           const analysisHistory = new AnalysisHistory({
             userId: userId,
@@ -92,7 +85,9 @@ router.post('/predict', auth, upload.single('file'), async (req, res) => {
               riskLevel: result.risk_level,
               confidence: result.confidence,
               predictedClass: result.predicted_class,
-              probabilities: result.probabilities
+              probabilities: result.probabilities,
+              validationConfidence: result.validation_confidence, // NEW: MobileNetV2 validation
+              isValidEcg: result.is_valid_ecg // NEW: Validation status
             },
             modelVersion: '1.0.0',
             processingStats: {
@@ -118,17 +113,22 @@ router.post('/predict', auth, upload.single('file'), async (req, res) => {
             confidence: result.confidence,
             predictedClass: result.predicted_class,
             probabilities: result.probabilities,
+            validationConfidence: result.validation_confidence, // NEW
+            isValidEcg: result.is_valid_ecg, // NEW
             fileName: req.file.originalname,
             analysisDate: new Date().toISOString()
           }
         });
 
       } catch (parseError) {
+        // Failed to parse JSON output - real error
         console.error('Failed to parse Python output:', pythonOutput);
+        console.error('Python stderr:', pythonError);
+        console.error('Exit code:', code);
         return res.status(500).json({
           success: false,
-          message: 'Failed to parse analysis results',
-          error: parseError.message
+          message: 'Analysis failed',
+          error: pythonError || parseError.message || 'Unknown error occurred'
         });
       }
     });
